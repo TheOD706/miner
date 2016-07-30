@@ -16,7 +16,7 @@ public class NetSpeaker implements Runnable {
 	DataOutputStream out;
 	BufferedReader keyboard;
 	boolean running;
-	public NetSpeaker ns;
+	public static NetSpeaker ns1, ns2;
 	
 	public NetSpeaker(){
 		running = true;
@@ -28,6 +28,7 @@ public class NetSpeaker implements Runnable {
 	        in = new DataInputStream(sin);
 	        out = new DataOutputStream(sout);
 	        keyboard = new BufferedReader(new InputStreamReader(System.in));
+	        ns2 = this;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -35,17 +36,26 @@ public class NetSpeaker implements Runnable {
 	
 	public void speak() {
 		//run listener
-		ns = new NetSpeaker();
-		ns.ns = ns;
-		Thread thread = new Thread(ns);
+		ns1 = new NetSpeaker();
+		Thread thread = new Thread(ns1);
 		thread.start();
 		//send request
-		synchronized (ns) {
-			ns.SendRequest("autorize");
-			ns.SendRequest("subscribe");
+		synchronized (ns2) {
+			try {
+				ns1.SendRequest("subscribe");
+				ns2.wait(25000);
+				ns1.SendRequest("autorize");
+				ns2.wait(25000);
+				if(!BlockManager.init().ready()) ns2.wait(10000);
+				ns1.SendRequest("submit");
+				ns2.wait(25000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		try {
-			while (ns.SendRequest(keyboard.readLine())) {		}
+			while (ns1.SendRequest(keyboard.readLine())) {		}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -62,6 +72,10 @@ public class NetSpeaker implements Runnable {
 			break;
 		case "exit":
 			return false;
+		case "submit":
+			String[] s = BlockManager.init().Hash();
+			line ="{\"params\": [\"up101084139.w1\", \"" + s[0] + "\", \"" + s[1] + "\", \"" + s[2] + "\", \"" + s[3] + "\"], \"id\": 4, \"method\": \"mining.submit\"}";
+			break;
 		default:
 			line = "\n";
 		}
@@ -72,8 +86,8 @@ public class NetSpeaker implements Runnable {
 			e.printStackTrace();
 		}
 		System.out.println("sended " + line);
-		synchronized (ns) {
-			ns.notify();			
+		synchronized (ns1) {
+			ns1.notify();			
 		}
 		return true;
 	}
@@ -89,12 +103,15 @@ public class NetSpeaker implements Runnable {
 				e.printStackTrace();
 			}
 			if(l > 0) BlockManager.init().pushBlock(b);
-			/*System.out.println("accept: b" + l);
-			System.out.println(new String(b));*/
+			synchronized (ns2) {
+				ns2.notify();				
+			}
+			/*System.out.println("accept: b" + l);*/
+			System.out.println("read " + new String(b));
 			if(l == -1)
-			synchronized (this) {
+			synchronized (ns1) {
 				try {
-					this.wait(5000);
+					ns1.wait(5000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}	
