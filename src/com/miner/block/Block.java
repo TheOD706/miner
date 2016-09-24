@@ -76,7 +76,8 @@ public class Block {
 	}
 	private String generatedExtranonce2(String job_id, int size, boolean erase){
 		// for example only  dirt way to generate a unique extranonce for each job id.
-		String answer = job_id;
+		//String answer = job_id;
+		String answer = "1";
 		while (answer.length() < size * 2){
 			answer += "0" + answer;
 		}
@@ -98,16 +99,26 @@ public class Block {
 		return coinbase.toString();
 	}
 	
+	private String generateCoinbase(String en2){
+		StringBuilder coinbase = new StringBuilder();
+		coinbase.append(coinb1);
+		coinbase.append(Extranonce1);
+		coinbase.append(en2);
+		coinbase.append(coinb2);
+		return coinbase.toString();
+	}
+	
 	public String Merkle2(String cb) {
 		String mr = cb;
 		for(int i = 0; i < merkle_branch.length; ++i)
 			mr = sha256(sha256(mr + merkle_branch[i]));
-		int n = mr.length() / 2;
+		/*int n = mr.length() / 2;
 		StringBuilder sb = new StringBuilder();
 		for(int i = 2 * (n - 1); i >= 0; i -= 2){
 			sb.append(mr.substring(i, i + 2));
 		}
-		return sb.toString();
+		return sb.toString();*/
+		return mr;
 	}
 	
 	public boolean Block2(){
@@ -122,6 +133,7 @@ public class Block {
 				ntime = Long.toHexString(Long.parseLong(ntime, 16) + ((new Date().getTime() - starttime) / 1000));
 				return true;
 			}
+			if(nonce.endsWith("0000")) System.out.println("mining work ... " + nonce);
 			if(l >= 4294967295L) break;
 			++l;
 		}
@@ -139,6 +151,18 @@ public class Block {
 			++nonce;
 		}
 		return true;
+	}
+
+	public String testControll(String nonce2, String en2) {
+		String coinbase = sha256(sha256(generateCoinbase(en2)));
+		String merkle = Merkle2(coinbase);
+		String v = helperBlock.reverse(version);
+		String p = helperBlock.reverse8(prevhash);
+		String t = helperBlock.reverse(ntime);
+		String b = helperBlock.reverse(nbits);
+		String header = v + p + merkle + t + b;
+		String hash = sha256(sha256(header + helperBlock.reverse(nonce2)));
+		return hash;
 	}
 
 }

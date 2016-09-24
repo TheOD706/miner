@@ -31,14 +31,30 @@ public class Test {
 		System.out.println(block.getTarget("1"));
 		System.out.println(block.getTarget("32"));*/
 
-		HelperBlock block = new HelperBlock();
+		/*HelperBlock block = new HelperBlock();
 		long l = new Long("0");
 		while(true){
 			System.out.println(l);
 			System.out.println(block.toHex_x8(l));
 			if(l >= 4294967295l) break;
 			++l;
-		}
+		}*/
+		
+		//testfor look what block algorithm return
+		BlockManager bm = BlockManager.init();
+		task = "{\"id\": 1, \"result\": [ [ [\"mining.set_difficulty\", \"b4b6693b72a50c7116db18d6497cac52\"], [\"mining.notify\", \"ae6812eb4cd7735a302a8a9dd95cf71f\"]], \"08000002\", 4], \"error\": null}\n";
+		bm.pushBlock(task.getBytes());
+		task = "{\"error\": null, \"id\": 2, \"result\": true}\n";
+		bm.pushBlock(task.getBytes());
+		task = "{ \"id\": null, \"method\": \"mining.set_difficulty\", \"params\": [2]}\n";
+		bm.pushBlock(task.getBytes());
+		task = "{\"params\": [\"bf\", \"4d16b6f85af6e2198f44ae2a6de67f78487ae5611b77c6c0440b921e00000000\"," +
+				"\"01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff20020862062f503253482f04b8864e5008\"," +
+				"\"072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000\", []," +
+				"\"00000002\", \"1c2ac4af\", \"504e86b9\", false], \"id\": null, \"method\": \"mining.notify\"}";
+		bm.pushBlock(task.getBytes());
+		task = bm.ControllTest("b2957c02", "00000002");
+		System.out.println(task);
 		
 	}
 

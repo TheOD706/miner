@@ -31,13 +31,13 @@ public class BlockManager {
 			for(int i = 0; i < n; ++i){
 				if(s1.charAt(i) == ',')
 					if(i3 == 0) {
-						as.add(s1.substring(i4, i));
+						as.add(s1.substring(i4, i).replaceAll(" ", ""));
 						i4 = i + 1;
 					}
 				if(s1.charAt(i) == '[') ++i3;
 				if(s1.charAt(i) == ']') --i3;
 			}
-			as.add(s1.substring(i4));
+			as.add(s1.substring(i4).replaceAll(" ", ""));
 			ParseBlock(as.toArray(new String[0]));	
 			i1 = s.indexOf('{', i2); 
 		}
@@ -217,6 +217,10 @@ public class BlockManager {
 	
 	public String getNonce() {
 		return block.nonce;
+	}
+	
+	public String ControllTest(String nonce, String en2) {
+		return block.testControll(nonce, en2);
 	}
 
 }
