@@ -192,7 +192,6 @@ public class BlockManager {
 		block.coinb1 = sa[2];
 		block.coinb2 = sa[3];
 		block.merkle_branch = sa[4].substring(sa[4].indexOf('[') + 1, sa[4].lastIndexOf(']')).split(",");
-		block.Merkle();
 		block.version = sa[5];
 		block.nbits = sa[6];
 		block.ntime = sa[7];
@@ -201,14 +200,17 @@ public class BlockManager {
 	}
 	
 	public String[] Hash() {
-		block.Block2();
-		String[] res = new String[4];
-		res[0] = block.job_id;
-		res[1] = block.extranonce2;
-		res[2] = block.ntime;
-		res[3] = block.nonce;
-		block.ready = false;
-		return res;
+		if(block.searchBlock()){
+			String[] res = new String[4];
+			res[0] = block.job_id;
+			res[1] = block.extranonce2;
+			res[2] = block.ntime;
+			res[3] = block.nonce;
+			block.ready = false;
+			return res;
+		} else {
+			return null;
+		}
 	}
 	
 	public boolean ready() {
@@ -219,8 +221,8 @@ public class BlockManager {
 		return block.nonce;
 	}
 	
-	public String ControllTest(String nonce, String en2) {
-		return block.testControll(nonce, en2);
+	public boolean ControllTest(String nonce, String en2) {
+		return block.check(nonce, en2);
 	}
 
 }
