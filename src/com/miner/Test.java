@@ -1,7 +1,5 @@
 package com.miner;
 
-import com.miner.block.HelperBlock;
-
 
 public class Test {
 
@@ -42,18 +40,16 @@ public class Test {
 		
 		//testfor look what block algorithm return
 		BlockManager bm = BlockManager.init();
-		task = "{\"id\": 1, \"result\": [ [ [\"mining.set_difficulty\", \"b4b6693b72a50c7116db18d6497cac52\"], [\"mining.notify\", \"ae6812eb4cd7735a302a8a9dd95cf71f\"]], \"08000002\", 4], \"error\": null}\n";
+		task = "{\"id\":0,\"result\":[[[\"mining.set_difficulty\",\"b4b6693b72a50c7116db18d6497cac52\"],[\"mining.notify\",\"ae6812eb4cd7735a302a8a9dd95cf71f\"]],\"f53d0211\",4],\"error\":null}\n";
 		bm.pushBlock(task.getBytes());
-		task = "{\"error\": null, \"id\": 2, \"result\": true}\n";
+		task = "{\"id\":1,\"result\":true,\"error\":null}\n";
 		bm.pushBlock(task.getBytes());
-		task = "{ \"id\": null, \"method\": \"mining.set_difficulty\", \"params\": [2]}\n";
+		task = "{\"id\":null,\"params\":[4],\"method\":\"mining.set_difficulty\"}\n";
 		bm.pushBlock(task.getBytes());
-		task = "{\"params\": [\"bf\", \"4d16b6f85af6e2198f44ae2a6de67f78487ae5611b77c6c0440b921e00000000\"," +
-				"\"01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff20020862062f503253482f04b8864e5008\"," +
-				"\"072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000\", []," +
-				"\"00000002\", \"1c2ac4af\", \"504e86b9\", false], \"id\": null, \"method\": \"mining.notify\"}";
+		task = "{\"id\":null,\"params\":[\"-4fb1d548\",\"db48fff805d2f2be98c101b2103afcd3fc0d2f2803bf92a30000000000000000\",\"01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff410353950604f8b0e75708\",\"2e522cfabe6d6d3555ed13d9e4c9317fc507a9080eeef9cb14b591b0cc1636caff691168d3f24704000000000000000000000001e5129d4a000000001976a91480ad90d403581fa3bf46086a91b2d9d4125db6c188ac00000000\",[\"7c60191525d8563e379a4049e44d77be2fecdb348eaf844c86d434a0cad8d75c\",\"ae757ce8f99307303fd31b81b1672674523e84cebab7d4f5fc76c97c46fe6f87\",\"6ab95b94b7970237331551e2f22097432863ee31916d9c80fa2251739d6eb20d\",\"332eec53c5f131c6abe85d64f928151d072cae47f8477d417185b84ec2904a56\",\"3c2f9fdbcca3f01cc8ca2f8eee445271617f10889c39d5644399865fe6dc8a1d\",\"b06350717cd3e844ed5d605a4d7a5f25bf859beeb2bf1aab4e2bf7fa45ee5954\",\"7a1f44163fe18591b2c50b1499b8f09f519e9cd18d1fda14be0e87a029cda741\"],\"20000000\",\"18048ed4\",\"57e7b0f8\",true],\"method\":\"mining.notify\"}\n";
 		bm.pushBlock(task.getBytes());
-		task = bm.ControllTest("b2957c02", "00000002");
+		//answer {"params": ["up101084139.cgminertest", "-4fb1d548", "01000000", "57e7b0f8", "2536d114"], "id": 2, "method": "mining.submit"}
+		task = Boolean.toString(bm.ControllTest("2536d114", "01000000"));
 		System.out.println(task);
 		
 	}
