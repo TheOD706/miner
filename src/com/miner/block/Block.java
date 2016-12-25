@@ -132,11 +132,11 @@ public class Block {
 		byte[] t = swap(ntime);
 		byte[] b = swap(nbits);
 		byte[] header_prefix_bin = concatByteArray(v, concatByteArray(p, concatByteArray(merkle, concatByteArray(t, b))));
+		System.out.println(hexlify(header_prefix_bin));
 		byte[] nonce_bin = swap(nonce2);
 		String hash = hexlify(swap(sha256d(concatByteArray(header_prefix_bin, nonce_bin))));
 		System.out.println(hash);
 		System.out.println(Target());
-		System.out.println(hash.compareTo(Target()) < 0);
 		return hash.compareTo(Target()) < 0;
 	}
 
